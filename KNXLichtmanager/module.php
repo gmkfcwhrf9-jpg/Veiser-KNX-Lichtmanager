@@ -30,7 +30,7 @@ class VeiserKNXLichtmanager extends IPSModule
         $this->EnableAction('ColorTemperature');
         $this->RegisterVariableInteger('Color', 'RGB Farbe', '~HexColor', 40);
         $this->EnableAction('Color');
-        $this->RegisterVariableString('Diagnostic', 'Status', '', 90);
+
     }
 
     public function ApplyChanges()
@@ -47,12 +47,23 @@ class VeiserKNXLichtmanager extends IPSModule
         $this->MaintainVariable('Brightness', 'Helligkeit', VARIABLETYPE_INTEGER, '~Intensity.100', 20, $this->ReadPropertyBoolean('EnableDim'));
         $this->MaintainVariable('ColorTemperature', 'Farbtemperatur (K)', VARIABLETYPE_INTEGER, '', 30, $this->ReadPropertyBoolean('EnableCCT'));
         $this->MaintainVariable('Color', 'RGB Farbe', VARIABLETYPE_INTEGER, '~HexColor', 40, $this->ReadPropertyBoolean('EnableRGB'));
-        $this->MaintainVariable('Diagnostic', 'Status', VARIABLETYPE_STRING, '', 90, true);
+        // Jede vorhandene Bedienvariable muss eine Aktion besitzen.
+        foreach (['Power', 'Brightness', 'ColorTemperature', 'Color'] as $ident) {
+            if (@$this->GetIDForIdent($ident) > 0) {
+                $this->EnableAction($ident);
+            }
+        }
+
+        // Alte Statusvariable aus v1.3 entfernen.
+        $oldStatus = @IPS_GetObjectIDByIdent('Diagnostic', $this->InstanceID);
+        if ($oldStatus !== false && IPS_VariableExists($oldStatus)) {
+            IPS_DeleteVariable($oldStatus);
+        }
 
         // Native Symcon-Darstellungen: Voraussetzung fuer die kombinierte Lichtkachel.
         // Bestehende Variablen werden ebenfalls aktualisiert.
         $this->ApplyLightPresentations();
-        IPS_SetHidden($this->GetIDForIdent('Diagnostic'), true);
+
 
 
         foreach (['SwitchID', 'SwitchFeedbackID', 'DimID', 'DimFeedbackID', 'CCTID', 'CCTFeedbackID', 'RGBID', 'RGBFeedbackID'] as $property) {
@@ -138,7 +149,7 @@ class VeiserKNXLichtmanager extends IPSModule
     private function SendKNX($property, $value)
     {
         if ($this->ReadPropertyBoolean('DryRun')) {
-            $this->SetDiagnostic('TEST: ' . $property . ' = ' . json_encode($value));
+            IPS_LogMessage('Veiser KNX Lichtmanager', 'TEST: ' . $property . ' = ' . json_encode($value));
             return;
         }
         $id = $this->ReadPropertyInteger($property);
@@ -146,12 +157,7 @@ class VeiserKNXLichtmanager extends IPSModule
             throw new Exception('KNX-Variable nicht konfiguriert: ' . $property);
         }
         IPS_RequestAction($id, $value);
-        $this->SetDiagnostic('Befehl gesendet: ' . $property);
-    }
 
-    private function SetDiagnostic($message)
-    {
-        SetValueString($this->GetIDForIdent('Diagnostic'), $message);
     }
 
     private function ReadSource($primary, $fallback)
