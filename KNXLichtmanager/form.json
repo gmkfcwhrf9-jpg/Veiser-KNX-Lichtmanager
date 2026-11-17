@@ -92,7 +92,11 @@
   "actions": [
     {
       "type": "Label",
-      "caption": "Erst im Testmodus pruefen. Die nativen Visualisierungs-Kacheln werden aus den Modulvariablen in der Visualisierung eingerichtet."
+      "caption": "KNX-Variablen mit aktivierter Standardaktion auswaehlen. Eigene Aktion: (Kein) ist bei KNX normal."
+    },
+    {
+      "type": "Label",
+      "caption": "Die nativen Symcon-Lichtkacheln werden in der Visualisierung aus den Modulvariablen zusammengestellt; keine HTML-Kachel."
     }
   ],
   "status": []
