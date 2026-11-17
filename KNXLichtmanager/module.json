@@ -1,0 +1,11 @@
+{
+  "id": "{C11D9B86-5275-4A58-AD94-B9F0B4F1A713}",
+  "name": "Veiser KNX Lichtmanager",
+  "type": 3,
+  "vendor": "Veiser",
+  "aliases": ["Veiser KNX Lichtmanager"],
+  "parentRequirements": [],
+  "childRequirements": [],
+  "implemented": [],
+  "prefix": "VKLM"
+}

@@ -1,0 +1,99 @@
+{
+  "elements": [
+    {
+      "type": "ValidationTextBox",
+      "name": "RoomName",
+      "caption": "Raum"
+    },
+    {
+      "type": "ValidationTextBox",
+      "name": "LightName",
+      "caption": "Name der Lichtgruppe (wird Instanzname)"
+    },
+    {
+      "type": "CheckBox",
+      "name": "DryRun",
+      "caption": "Testmodus (keine KNX-Schreibbefehle)"
+    },
+    {
+      "type": "Label",
+      "caption": "Schalten (immer aktiv)"
+    },
+    {
+      "type": "SelectVariable",
+      "name": "SwitchID",
+      "caption": "KNX Schalten (DPT 1.001)"
+    },
+    {
+      "type": "SelectVariable",
+      "name": "SwitchFeedbackID",
+      "caption": "KNX Schaltstatus (optional)"
+    },
+    {
+      "type": "CheckBox",
+      "name": "EnableDim",
+      "caption": "Dimmen aktivieren"
+    },
+    {
+      "type": "SelectVariable",
+      "name": "DimID",
+      "caption": "KNX Dimmwert (DPT 5.001)"
+    },
+    {
+      "type": "SelectVariable",
+      "name": "DimFeedbackID",
+      "caption": "KNX Dimmwert Rueckmeldung (optional)"
+    },
+    {
+      "type": "CheckBox",
+      "name": "EnableCCT",
+      "caption": "Farbtemperatur aktivieren"
+    },
+    {
+      "type": "SelectVariable",
+      "name": "CCTID",
+      "caption": "KNX Farbtemperatur (Kelvin)"
+    },
+    {
+      "type": "SelectVariable",
+      "name": "CCTFeedbackID",
+      "caption": "KNX Farbtemperatur Rueckmeldung (optional)"
+    },
+    {
+      "type": "NumberSpinner",
+      "name": "CCTMin",
+      "caption": "Farbtemperatur Minimum (K)"
+    },
+    {
+      "type": "NumberSpinner",
+      "name": "CCTMax",
+      "caption": "Farbtemperatur Maximum (K)"
+    },
+    {
+      "type": "CheckBox",
+      "name": "EnableRGB",
+      "caption": "RGB aktivieren (auch zusammen mit Farbtemperatur)"
+    },
+    {
+      "type": "SelectVariable",
+      "name": "RGBID",
+      "caption": "KNX RGB als Integer 0xRRGGBB (DPT 232.600)"
+    },
+    {
+      "type": "SelectVariable",
+      "name": "RGBFeedbackID",
+      "caption": "KNX RGB Rueckmeldung (optional)"
+    },
+    {
+      "type": "Label",
+      "caption": "RGB erfordert eine KNX-Variable mit 24-Bit-RGB-Integer. Andere Controllerformate brauchen einen Adapter."
+    }
+  ],
+  "actions": [
+    {
+      "type": "Label",
+      "caption": "Erst im Testmodus pruefen. Die nativen Visualisierungs-Kacheln werden aus den Modulvariablen in der Visualisierung eingerichtet."
+    }
+  ],
+  "status": []
+}
