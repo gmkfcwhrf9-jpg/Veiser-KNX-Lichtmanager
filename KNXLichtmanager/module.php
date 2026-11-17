@@ -49,6 +49,12 @@ class VeiserKNXLichtmanager extends IPSModule
         $this->MaintainVariable('Color', 'RGB Farbe', VARIABLETYPE_INTEGER, '~HexColor', 40, $this->ReadPropertyBoolean('EnableRGB'));
         $this->MaintainVariable('Diagnostic', 'Status', VARIABLETYPE_STRING, '', 90, true);
 
+        // Native Symcon-Darstellungen: Voraussetzung fuer die kombinierte Lichtkachel.
+        // Bestehende Variablen werden ebenfalls aktualisiert.
+        $this->ApplyLightPresentations();
+        IPS_SetHidden($this->GetIDForIdent('Diagnostic'), true);
+
+
         foreach (['SwitchID', 'SwitchFeedbackID', 'DimID', 'DimFeedbackID', 'CCTID', 'CCTFeedbackID', 'RGBID', 'RGBFeedbackID'] as $property) {
             $id = $this->ReadPropertyInteger($property);
             if ($id > 0 && @IPS_VariableExists($id)) {
@@ -56,6 +62,43 @@ class VeiserKNXLichtmanager extends IPSModule
             }
         }
         $this->SyncAll();
+    }
+
+    private function ApplyLightPresentations()
+    {
+        IPS_SetVariableCustomPresentation($this->GetIDForIdent('Power'), [
+            'PRESENTATION' => VARIABLE_PRESENTATION_SWITCH,
+            'USAGE_TYPE' => 0
+        ]);
+
+        if ($this->ReadPropertyBoolean('EnableDim')) {
+            IPS_SetVariableCustomPresentation($this->GetIDForIdent('Brightness'), [
+                'PRESENTATION' => VARIABLE_PRESENTATION_SLIDER,
+                'MIN' => 0,
+                'MAX' => 100,
+                'STEP_SIZE' => 1,
+                'USAGE_TYPE' => 2,
+                'SUFFIX' => ' %'
+            ]);
+        }
+
+        if ($this->ReadPropertyBoolean('EnableCCT')) {
+            IPS_SetVariableCustomPresentation($this->GetIDForIdent('ColorTemperature'), [
+                'PRESENTATION' => VARIABLE_PRESENTATION_SLIDER,
+                'MIN' => $this->ReadPropertyInteger('CCTMin'),
+                'MAX' => $this->ReadPropertyInteger('CCTMax'),
+                'STEP_SIZE' => 1,
+                'GRADIENT_TYPE' => 2,
+                'USAGE_TYPE' => 1,
+                'SUFFIX' => ' K'
+            ]);
+        }
+
+        if ($this->ReadPropertyBoolean('EnableRGB')) {
+            IPS_SetVariableCustomPresentation($this->GetIDForIdent('Color'), [
+                'PRESENTATION' => VARIABLE_PRESENTATION_COLOR
+            ]);
+        }
     }
 
     public function RequestAction($Ident, $Value)
